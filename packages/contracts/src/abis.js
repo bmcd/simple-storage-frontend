@@ -1,9 +1,7 @@
-import erc20Abi from "./abis/erc20.json";
-import ownableAbi from "./abis/ownable.json";
+import SimpleStorageV1 from "./abis/SimpleStorageV1.json";
 
 const abis = {
-  erc20: erc20Abi,
-  ownable: ownableAbi,
+  simpleStorageV1: SimpleStorageV1,
 };
 
 export default abis;
