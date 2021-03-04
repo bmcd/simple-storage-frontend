@@ -10,14 +10,16 @@ export default function SimpleStorage ({ provider }) {
   const [newValue, setNewValue] = useState('')
 
   async function refresh () {
-    const localhostSS1 = new Contract(addresses.localhostSS1, abis.simpleStorageV1, provider)
+    const network = await provider.getNetwork()
+    const localhostSS1 = new Contract(addresses[network.chainId], abis.simpleStorageV1, provider)
     const storageValue = await localhostSS1.get()
     setCurrentValue(storageValue.toNumber())
   }
 
   async function set (newValueString) {
+    const network = await provider.getNetwork()
     const newValue = BigNumber.from(newValueString)
-    const localhostSS1 = new Contract(addresses.localhostSS1, abis.simpleStorageV1, provider)
+    const localhostSS1 = new Contract(addresses[network.chainId], abis.simpleStorageV1, provider)
     localhostSS1.connect(provider.getSigner()).set(newValue)
   }
 
