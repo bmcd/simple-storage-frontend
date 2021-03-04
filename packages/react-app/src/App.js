@@ -1,14 +1,14 @@
-import React from "react";
-import { Contract } from "@ethersproject/contracts";
-import { getDefaultProvider } from "@ethersproject/providers";
-import { useQuery } from "@apollo/react-hooks";
+import React, { useEffect, useState } from 'react'
+import { Contract } from '@ethersproject/contracts'
+import { getDefaultProvider } from '@ethersproject/providers'
+import { useQuery } from '@apollo/react-hooks'
 
-import { Body, Button, Header, Image, Link } from "./components";
-import logo from "./ethereumLogo.png";
-import useWeb3Modal from "./hooks/useWeb3Modal";
+import { Body, Button, Header, Image, Link } from './components'
+import logo from './ethereumLogo.png'
+import useWeb3Modal from './hooks/useWeb3Modal'
 
-import { addresses, abis } from "@project/contracts";
-import GET_TRANSFERS from "./graphql/subgraph";
+import { abis, addresses } from '@project/contracts'
+import GET_TRANSFERS from './graphql/subgraph'
 
 async function readOnChainData() {
   // Should replace with the end-user wallet, e.g. Metamask
@@ -37,6 +37,26 @@ function WalletButton({ provider, loadWeb3Modal, logoutOfWeb3Modal }) {
   );
 }
 
+function NetworkInfo({ provider }) {
+  const [network, setNetwork] = useState()
+
+  useEffect(() => {
+    if(!provider) {
+      return;
+    }
+    provider.getNetwork().then((network) => setNetwork(network))
+
+  }, [provider])
+
+  if(!provider || !network) {
+    return <div>Not connected</div>
+  }
+  return <div>
+    <div>Connected{provider.provider.isMetaMask && ' (via MetaMask)'}: {network.name === 'unknown' ? 'Unknown Network' : network.name} ({network.chainId})</div>
+    <div>Address: {provider.provider.selectedAddress}</div>
+  </div>
+}
+
 function App() {
   const { loading, error, data } = useQuery(GET_TRANSFERS);
   const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
@@ -50,6 +70,7 @@ function App() {
   return (
     <div>
       <Header>
+        <NetworkInfo provider={provider} />
         <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
       </Header>
       <Body>
