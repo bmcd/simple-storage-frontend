@@ -64,10 +64,10 @@ export default function SimpleStorage ({ provider }) {
   return <div>
     <div>
       Current Value: {currentValue}
-      <Button onClick={() => refresh()}>
-        Refresh
-      </Button>
     </div>
+    <Button onClick={() => refresh()}>
+      Refresh
+    </Button>
     <div>
       <input type="number" value={newValue} onChange={(event) => setNewValue(event.target.value)}/>
       <Button
