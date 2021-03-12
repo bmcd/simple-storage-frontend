@@ -18,10 +18,21 @@ export async function getNetwork() {
   return provider.getNetwork()
 }
 
-export function getSigner() {
+function getSigner() {
   return provider.getSigner()
 }
 
-export function getContract(chainId) {
-  return new Contract(addresses[chainId], abis.simpleStorageV1, provider)
+async function getContract() {
+  const { chainId } = await getNetwork()
+  return new Contract(addresses[chainId], abis.simpleStorageV1, provider).deployed()
+}
+
+export async function getContractValue() {
+  const localhostSS1 = await getContract()
+  return localhostSS1.get()
+}
+
+export async function setContractValue(inputValue) {
+  const localhostSS1 = await getContract()
+  return localhostSS1.connect(getSigner()).set(inputValue)
 }

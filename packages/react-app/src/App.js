@@ -5,10 +5,10 @@ import { Body, Button, Header } from './components'
 import useWeb3Modal from './hooks/useWeb3Modal'
 
 import GET_TRANSFERS from './graphql/subgraph'
-import SimpleStorage from './components/SimpleStorage'
 import { useSelector } from 'react-redux'
 import { selectNetwork } from './features/network/networkSlice'
 import { NetworkInfo } from './features/network/NetworkInfo'
+import SimpleStorage from './features/contract/SimpleStorage'
 
 function WalletButton({ loadWeb3Modal, logoutOfWeb3Modal }) {
   const network = useSelector(selectNetwork)
