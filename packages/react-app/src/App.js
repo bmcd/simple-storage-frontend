@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useQuery } from '@apollo/react-hooks'
 
 import { Body, Button, Header } from './components'
@@ -6,46 +6,31 @@ import useWeb3Modal from './hooks/useWeb3Modal'
 
 import GET_TRANSFERS from './graphql/subgraph'
 import SimpleStorage from './components/SimpleStorage'
+import { useSelector } from 'react-redux'
+import { selectNetwork } from './features/network/networkSlice'
+import { NetworkInfo } from './features/network/NetworkInfo'
 
-function WalletButton({ provider, loadWeb3Modal, logoutOfWeb3Modal }) {
+function WalletButton({ loadWeb3Modal, logoutOfWeb3Modal }) {
+  const network = useSelector(selectNetwork)
   return (
     <Button
       onClick={() => {
-        if (!provider) {
+        if (!network.chainId) {
           loadWeb3Modal();
         } else {
           logoutOfWeb3Modal();
         }
       }}
     >
-      {!provider ? "Connect Wallet" : "Disconnect Wallet"}
+      {!network.chainId ? "Connect Wallet" : "Disconnect Wallet"}
     </Button>
   );
 }
 
-function NetworkInfo({ provider }) {
-  const [network, setNetwork] = useState()
-
-  useEffect(() => {
-    if(!provider) {
-      return;
-    }
-    provider.getNetwork().then((network) => setNetwork(network))
-
-  }, [provider])
-
-  if(!provider || !network) {
-    return <div>Not connected</div>
-  }
-  return <div>
-    <div>Connected{provider.provider.isMetaMask && ' (via MetaMask)'}: {network.name === 'unknown' ? 'Unknown Network' : network.name} ({network.chainId})</div>
-    <div>Address: {provider.provider.selectedAddress}</div>
-  </div>
-}
-
 function App() {
   const { loading, error, data } = useQuery(GET_TRANSFERS);
-  const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
+  const [loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
+  const network = useSelector(selectNetwork)
 
   React.useEffect(() => {
     if (!loading && !error && data && data.transfers) {
@@ -56,11 +41,11 @@ function App() {
   return (
     <div>
       <Header>
-        <NetworkInfo provider={provider} />
-        <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
+        <NetworkInfo />
+        <WalletButton loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
       </Header>
       <Body>
-        {provider && <SimpleStorage provider={provider} />}
+        {network.chainId && <SimpleStorage />}
       </Body>
     </div>
   );

@@ -2,6 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { Web3Provider } from "@ethersproject/providers";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import { useDispatch } from 'react-redux'
+import { setProvider } from '../api/provider'
+import { fetchNetwork, update } from '../features/network/networkSlice'
 
 // Enter a valid infura key here to avoid being rate limited
 // You can get a key for free at https://infura.io/register
@@ -10,7 +13,7 @@ const INFURA_ID = "INVALID_INFURA_KEY";
 const NETWORK_NAME = "mainnet";
 
 function useWeb3Modal(config = {}) {
-  const [provider, setProvider] = useState();
+  const dispatch = useDispatch()
   const [autoLoaded, setAutoLoaded] = useState(false);
   const { autoLoad = true, infuraId = INFURA_ID, NETWORK = NETWORK_NAME } = config;
 
@@ -33,10 +36,12 @@ function useWeb3Modal(config = {}) {
   const loadWeb3Modal = useCallback(async () => {
     const newProvider = await web3Modal.connect();
     setProvider(new Web3Provider(newProvider));
+    dispatch(fetchNetwork())
   }, [web3Modal]);
 
   const logoutOfWeb3Modal = useCallback(
     async function () {
+      dispatch(update({}))
       await web3Modal.clearCachedProvider();
       window.location.reload();
     },
@@ -51,7 +56,7 @@ function useWeb3Modal(config = {}) {
     }
   }, [autoLoad, autoLoaded, loadWeb3Modal, setAutoLoaded, web3Modal.cachedProvider]);
 
-  return [provider, loadWeb3Modal, logoutOfWeb3Modal];
+  return [loadWeb3Modal, logoutOfWeb3Modal];
 }
 
 export default useWeb3Modal;

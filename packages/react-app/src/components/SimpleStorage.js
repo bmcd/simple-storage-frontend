@@ -1,10 +1,14 @@
 import { Button } from './index'
 import React, { useEffect, useState } from 'react'
-import { Contract } from '@ethersproject/contracts'
 import { abis, addresses } from '@project/contracts'
 import { BigNumber } from '@ethersproject/bignumber'
+import { useSelector } from 'react-redux'
+import { selectNetwork } from '../features/network/networkSlice'
+import { getContract, getSigner } from '../api/provider'
 
-export default function SimpleStorage ({ provider }) {
+export default function SimpleStorage ({ }) {
+
+  const network = useSelector(selectNetwork)
 
   const [connected, setConnected] = useState(false)
   const [currentValue, setCurrentValue] = useState()
@@ -12,8 +16,7 @@ export default function SimpleStorage ({ provider }) {
   const [pendingTx, setPendingTx] = useState()
 
   async function refresh () {
-    const network = await provider.getNetwork()
-    const localhostSS1 = new Contract(addresses[network.chainId], abis.simpleStorageV1, provider)
+    const localhostSS1 = getContract(network.chainId)
     console.log('Connecting to contract at', addresses[network.chainId], 'on network with id:', network.chainId)
     try {
       await localhostSS1.deployed()
@@ -32,10 +35,9 @@ export default function SimpleStorage ({ provider }) {
     }
     setPendingTx('SENDING')
     setNewValue('')
-    const network = await provider.getNetwork()
     const newValue = BigNumber.from(newValueString)
-    const localhostSS1 = new Contract(addresses[network.chainId], abis.simpleStorageV1, provider)
-    localhostSS1.connect(provider.getSigner()).set(newValue)
+    const localhostSS1 = getContract(network.chainId)
+    localhostSS1.connect(getSigner()).set(newValue)
       .then((res) => {
         console.log('waiting for tx with hash', res.hash)
         setPendingTx(res.hash)
@@ -55,7 +57,7 @@ export default function SimpleStorage ({ provider }) {
 
   useEffect(() => {
     refresh()
-  }, [provider])
+  }, [network])
 
   if(!connected) {
     return <div>Not connected to contract.</div>
