@@ -63,21 +63,6 @@ export default function SimpleStorage () {
     </div>
   }
 
-  function getHelperText () {
-    if(error) {
-      return error
-    }
-
-    if(pendingTx === 'SENDING') {
-      return 'Sending...'
-
-    } else if (pendingTx) {
-      return `Waiting for transaction to complete: ${pendingTx}`
-    }
-
-    return undefined
-  }
-
   return <div>
     <Paper className={classes.container}>
       <IconButton style={{ float: 'right'}} onClick={() => dispatch(refreshContract())}>
@@ -98,7 +83,7 @@ export default function SimpleStorage () {
             type="number"
             value={inputValue}
             error={error}
-            helperText={getHelperText()}
+            helperText={error}
             onChange={(event) => setInputValue(event.target.value)}/>
           <Button
             className={classes.button}
