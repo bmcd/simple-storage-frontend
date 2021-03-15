@@ -49,7 +49,7 @@ export const setNewValue = (inputValue) => async dispatch => {
     })
     .catch(e => {
       console.error('error sending transaction', e)
-      dispatch(setError(e.toString()))
+      dispatch(setError(e.message))
       dispatch(setPendingTx(undefined))
     })
 }

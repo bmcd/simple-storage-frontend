@@ -1,35 +1,38 @@
 import React from 'react'
 import { useQuery } from '@apollo/react-hooks'
 
-import { Body, Button, Header } from './components'
-import useWeb3Modal from './hooks/useWeb3Modal'
-
 import GET_TRANSFERS from './graphql/subgraph'
 import { useSelector } from 'react-redux'
 import { selectNetwork } from './features/network/networkSlice'
-import { NetworkInfo } from './features/network/NetworkInfo'
 import SimpleStorage from './features/contract/SimpleStorage'
+import { Header } from './components/Header'
+import Container from '@material-ui/core/Container'
+import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
 
-function WalletButton({ loadWeb3Modal, logoutOfWeb3Modal }) {
-  const network = useSelector(selectNetwork)
-  return (
-    <Button
-      onClick={() => {
-        if (!network.chainId) {
-          loadWeb3Modal();
-        } else {
-          logoutOfWeb3Modal();
-        }
-      }}
-    >
-      {!network.chainId ? "Connect Wallet" : "Disconnect Wallet"}
-    </Button>
-  );
+const useStyles = makeStyles({
+  container: {
+    marginTop: 24,
+  },
+  title: {
+    padding: 12,
+  },
+})
+
+function NotConnected() {
+  const classes = useStyles()
+  return <div>
+    <Paper className={classes.container}>
+      <Typography variant="h6" className={classes.title}>
+        Connect to Metamask or a similar wallet to get started.
+      </Typography>
+    </Paper>
+  </div>
 }
 
 function App() {
   const { loading, error, data } = useQuery(GET_TRANSFERS);
-  const [loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
   const network = useSelector(selectNetwork)
 
   React.useEffect(() => {
@@ -40,13 +43,10 @@ function App() {
 
   return (
     <div>
-      <Header>
-        <NetworkInfo />
-        <WalletButton loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
-      </Header>
-      <Body>
-        {network.chainId && <SimpleStorage />}
-      </Body>
+      <Header />
+      <Container maxWidth="xs">
+        {network.chainId ? <SimpleStorage /> : <NotConnected />}
+      </Container>
     </div>
   );
 }
