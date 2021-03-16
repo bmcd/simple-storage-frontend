@@ -1,26 +1,25 @@
 specVersion: 0.0.2
 description: Subgraph that indexes the blockchain data
-repository: https://github.com/sablierhq/sablier-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: CeaErc20
-    network: mainnet
+    name: SimpleStorageV1
+    network: ropsten
     source:
-      abi: erc20
-      address: "0xc1C0472c0C80bCcDC7F5D01A376Bd97a734B8815"
+      address: "0x32D5AFB271C22ed6Db72D5D336F48E96eBc0c66C"
+      abi: simpleStorageV1
+      startBlock: 9851144
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       abis:
-        - name: erc20
-          file: ../contracts/src/abis/erc20.json
+        - name: simpleStorageV1
+          file: ../contracts/src/abis/SimpleStorageV1.json
       entities:
-        - Token
-        - Transfer
+        - Change
       eventHandlers:
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-      file: ./src/mappings/transfers.ts
+        - event: Change(string,uint256)
+          handler: handleChange
+      file: ./src/mappings/changes.ts
       language: wasm/assemblyscript
