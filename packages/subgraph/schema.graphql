@@ -1,5 +1,6 @@
 type Change @entity {
   id: ID!
-  message: String
-  newVal: BigInt
+  block: BigInt!
+  message: String!
+  newVal: BigInt!
 }
