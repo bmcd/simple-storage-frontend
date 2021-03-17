@@ -5,22 +5,17 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectNetwork } from '../network/networkSlice'
-import {
-  refreshContract,
-  selectContract,
-  setError,
-  setNewValue,
-} from './contractSlice'
+import { refreshContract, selectContract, setError, setNewValue, } from './contractSlice'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import IconButton from '@material-ui/core/IconButton'
 import { Refresh } from '@material-ui/icons'
 import Container from '@material-ui/core/Container'
-
+import RecentValues from './RecentValues'
 
 const useStyles = makeStyles({
   container: {
-    marginTop: 24,
+    marginTop: 12,
   },
   title: {
     padding: 12,
@@ -89,7 +84,7 @@ export default function SimpleStorage () {
             className={classes.button}
             variant="contained"
             disableElevation
-            disabled={pendingTx}
+            disabled={!!pendingTx}
             onClick={() => {
               try {
                 dispatch(setNewValue(BigNumber.from(inputValue)))
@@ -104,6 +99,7 @@ export default function SimpleStorage () {
         </div>
       </Container>
     </Paper>
+    <RecentValues />
   </div>
 }
 

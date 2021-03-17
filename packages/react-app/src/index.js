@@ -11,7 +11,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 // You should replace this url with your own and put it into a .env file
 // See all subgraphs: https://thegraph.com/explorer/
 const client = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/paulrberg/create-eth-app',
+  uri: 'https://api.thegraph.com/subgraphs/name/bmcd/simplestoragev1',
 })
 
 function render (TheApp) {

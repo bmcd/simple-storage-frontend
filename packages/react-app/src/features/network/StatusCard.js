@@ -5,33 +5,14 @@ import Snackbar from '@material-ui/core/Snackbar'
 import { useSelector } from 'react-redux'
 import { selectContract } from '../contract/contractSlice'
 import SnackbarContent from '@material-ui/core/SnackbarContent'
-import Link from '@material-ui/core/Link'
 import { selectNetwork } from './networkSlice'
+import { getTransactionLink } from '../../utils/eth_utils'
 
-const etherscanUrls = {
-  1: 'https://etherscan.io',
-  3: 'https://ropsten.etherscan.io',
-  4: 'https://rinkeby.etherscan.io',
-  5: 'https://goerli.etherscan.io',
-  42: 'https://kovan.etherscan.io',
-
-}
 export default function StatusCard() {
   const { pendingTx } = useSelector(selectContract)
   const { chainId } = useSelector(selectNetwork)
 
-  let action
-  if(etherscanUrls[chainId]) {
-    action = (
-      <Link href={`${etherscanUrls[chainId]}/tx/${pendingTx}`}
-            color="secondary"
-            size="small"
-            target="_blank"
-            rel="noreferrer">
-        View in Etherscan
-      </Link>
-    );
-  }
+  const action = getTransactionLink(chainId, pendingTx, "View in Etherscan");
 
   return <div>
     <Paper>
