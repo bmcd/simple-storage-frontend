@@ -6,17 +6,21 @@ import { useSelector } from 'react-redux'
 import { selectNetwork } from './features/network/networkSlice'
 import SimpleStorage from './features/contract/SimpleStorage'
 import { Header } from './components/Header'
-import Container from '@material-ui/core/Container'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import StatusCard from './features/network/StatusCard'
+import PersonalStorage from './features/contract/PersonalStorage'
+import Grid from '@material-ui/core/Grid'
 
 const useStyles = makeStyles({
   container: {
-    marginTop: 24,
+    margin: 12,
   },
   title: {
+    padding: 12,
+  },
+  gridItem: {
     padding: 12,
   },
 })
@@ -33,6 +37,7 @@ function NotConnected() {
 }
 
 function App() {
+  const classes = useStyles()
   const { loading, error, data } = useQuery(GET_TRANSFERS);
   const network = useSelector(selectNetwork)
 
@@ -45,9 +50,21 @@ function App() {
   return (
     <div>
       <Header />
-      <Container maxWidth="xs">
-        {network.chainId ? <SimpleStorage /> : <NotConnected />}
-      </Container>
+      {!network.chainId && <NotConnected />}
+      {network.chainId && <Grid
+        container
+        direction="row"
+        justify="space-around"
+        alignItems="flex-start"
+      >
+        <Grid className={classes.gridItem} item xs={12} sm={10} md={6}>
+          <PersonalStorage/>
+        </Grid>
+        <Grid className={classes.gridItem} item xs={12} sm={10} md={6}>
+          <SimpleStorage/>
+        </Grid>
+      </Grid>
+      }
       <StatusCard />
     </div>
   );

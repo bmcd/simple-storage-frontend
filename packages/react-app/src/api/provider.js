@@ -24,15 +24,25 @@ function getSigner() {
 
 async function getContract() {
   const { chainId } = await getNetwork()
-  return new Contract(addresses[chainId], abis.simpleStorageV1, provider).deployed()
+  return new Contract(addresses[chainId], abis.simpleStorageV2, provider).deployed()
 }
 
 export async function getContractValue() {
-  const localhostSS1 = await getContract()
-  return localhostSS1.get()
+  const simpleStorage = await getContract()
+  return simpleStorage.get()
 }
 
-export async function setContractValue(inputValue) {
-  const localhostSS1 = await getContract()
-  return localhostSS1.connect(getSigner()).set(inputValue)
+export async function callSetContractValue(inputValue) {
+  const simpleStorage = await getContract()
+  return simpleStorage.connect(getSigner()).set(inputValue)
+}
+
+export async function getAddressValue(address) {
+  const simpleStorage = await getContract()
+  return simpleStorage.getForUser(address)
+}
+
+export async function callSetAddressValue(inputValue) {
+  const simpleStorage = await getContract()
+  return simpleStorage.connect(getSigner()).setForSender(inputValue)
 }
