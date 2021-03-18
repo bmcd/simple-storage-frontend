@@ -5,12 +5,15 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useDispatch } from 'react-redux'
 import { setProvider } from '../api/provider'
 import { fetchNetwork, update } from '../features/network/networkSlice'
+import Fortmatic from 'fortmatic'
+
+const NETWORK_NAME = 'ropsten'
 
 // Enter a valid infura key here to avoid being rate limited
 // You can get a key for free at https://infura.io/register
-const INFURA_ID = 'INVALID_INFURA_KEY';
+const INFURA_ID = 'INVALID_INFURA_KEY'
 
-const NETWORK_NAME = "ropsten";
+const FORTMATIC_KEY = 'INVALID_FORTMATIC_KEY'
 
 function useWeb3Modal(config = {}) {
   const dispatch = useDispatch()
@@ -19,6 +22,9 @@ function useWeb3Modal(config = {}) {
 
   if (INFURA_ID === 'INVALID_INFURA_KEY') {
     console.log('Warning: In order for WalletConnect to work properly, please add an Infura ID to src/hooks/useWeb3Modal.js')
+  }
+  if (FORTMATIC_KEY === 'INVALID_FORTMATIC_KEY') {
+    console.log('Warning: In order for Fortmatic to work properly, please add a fortmatic api key to src/hooks/useWeb3Modal.js')
   }
   // Web3Modal also supports many other wallets.
   // You can see other options at https://github.com/Web3Modal/web3modal
@@ -31,6 +37,12 @@ function useWeb3Modal(config = {}) {
         options: {
           infuraId,
         },
+      },
+      fortmatic: {
+        package: Fortmatic, // required
+        options: {
+          key: FORTMATIC_KEY // required
+        }
       },
     },
   });

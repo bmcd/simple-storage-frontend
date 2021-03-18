@@ -36,6 +36,7 @@
     "chalk": "^4.1.0",
     "eslint": "^6.8.0",
     "eslint-plugin-flowtype": "^4.6.0",
+    "fortmatic": "^2.2.1",
     "graphql": "^14.7.0",
     "ipfs-http-client": "^45.0.0",
     "react": "16.14.0",
