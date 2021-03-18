@@ -17,13 +17,13 @@ const useStyles = makeStyles({
 })
 export function NetworkInfo () {
   const classes = useStyles()
-  const { name, chainId, isMetaMask, selectedAddress } = useSelector(selectNetwork)
+  const { name, chainId, walletType, selectedAddress } = useSelector(selectNetwork)
 
   if (!chainId) {
     return <div></div>
   }
   return <div className={classes.container}>
-    <Typography className={classes.line}>Connected{isMetaMask && ' (via MetaMask)'}: {name === 'unknown' ? 'Unknown Network' : name} ({chainId})</Typography>
+    <Typography className={classes.line}>Connected{walletType && ` (via ${walletType})`}: {name === 'unknown' ? 'Unknown Network' : name} ({chainId})</Typography>
     <Typography className={classes.line}>Address: {selectedAddress}</Typography>
   </div>
 }

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { getNetwork, getProviderInfo } from '../../api/provider'
+import { getAccounts, getNetwork, getWalletType } from '../../api/provider'
 
 export const networkSlice = createSlice({
   name: 'network',
@@ -14,17 +14,19 @@ export const networkSlice = createSlice({
 })
 
 export const fetchNetwork = () => async dispatch => {
-  await getNetwork()
-    .then(function ({chainId, ensAddress, name }) {
-      dispatch(update({
-        name,
-        chainId,
-        ensAddress,
-        // extra info like isMetaMask and the current selected address
-        ...getProviderInfo(),
-      }))
-    })
-    .catch(e => console.log('error', e))
+  try {
+    const { name, chainId, ensAddress } = await getNetwork()
+    const accounts = (await getAccounts()) || []
+    dispatch(update({
+      name,
+      chainId,
+      ensAddress,
+      walletType: getWalletType(),
+      selectedAddress: accounts[0],
+    }))
+  } catch (e) {
+    console.log('error', e)
+  }
 }
 
 export const { update } = networkSlice.actions

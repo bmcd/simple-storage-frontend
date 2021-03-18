@@ -18,6 +18,19 @@ export async function getNetwork() {
   return provider.getNetwork()
 }
 
+export async function getAccounts() {
+  return provider.listAccounts()
+}
+
+export function getWalletType() {
+  if(provider.provider.isMetaMask) {
+    return 'MetaMask'
+  }
+  if(provider.provider.isWalletConnect) {
+    return 'WalletConnect'
+  }
+}
+
 function getSigner() {
   return provider.getSigner()
 }

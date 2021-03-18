@@ -51,7 +51,9 @@ export default function SimpleStorage () {
   const [inputValue, setInputValue] = useState('')
 
   useEffect(() => {
-    dispatch(findAddress(network.selectedAddress))
+    if(network.selectedAddress) {
+      dispatch(findAddress(network.selectedAddress))
+    }
   }, [network])
 
   if(!connected) {

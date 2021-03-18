@@ -8,15 +8,18 @@ import { fetchNetwork, update } from '../features/network/networkSlice'
 
 // Enter a valid infura key here to avoid being rate limited
 // You can get a key for free at https://infura.io/register
-const INFURA_ID = "INVALID_INFURA_KEY";
+const INFURA_ID = 'INVALID_INFURA_KEY';
 
-const NETWORK_NAME = "mainnet";
+const NETWORK_NAME = "ropsten";
 
 function useWeb3Modal(config = {}) {
   const dispatch = useDispatch()
   const [autoLoaded, setAutoLoaded] = useState(false);
   const { autoLoad = true, infuraId = INFURA_ID, NETWORK = NETWORK_NAME } = config;
 
+  if (INFURA_ID === 'INVALID_INFURA_KEY') {
+    console.log('Warning: In order for WalletConnect to work properly, please add an Infura ID to src/hooks/useWeb3Modal.js')
+  }
   // Web3Modal also supports many other wallets.
   // You can see other options at https://github.com/Web3Modal/web3modal
   const web3Modal = new Web3Modal({
