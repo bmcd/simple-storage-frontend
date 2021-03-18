@@ -1,7 +1,6 @@
 import React from 'react'
 import { useQuery } from '@apollo/react-hooks'
 
-import GET_TRANSFERS from './graphql/subgraph'
 import { useSelector } from 'react-redux'
 import { selectNetwork } from './features/network/networkSlice'
 import SimpleStorage from './features/contract/SimpleStorage'
@@ -38,14 +37,7 @@ function NotConnected() {
 
 function App() {
   const classes = useStyles()
-  const { loading, error, data } = useQuery(GET_TRANSFERS);
   const network = useSelector(selectNetwork)
-
-  React.useEffect(() => {
-    if (!loading && !error && data && data.transfers) {
-      console.log({ transfers: data.transfers });
-    }
-  }, [loading, error, data]);
 
   return (
     <div>
