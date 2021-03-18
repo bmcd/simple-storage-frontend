@@ -3,4 +3,5 @@ type Change @entity {
   block: BigInt!
   message: String!
   newVal: BigInt!
+  user: Bytes
 }

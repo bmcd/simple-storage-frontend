@@ -46,6 +46,7 @@ const GET_CHANGES = gql`
     block
     message
     newVal
+    user
   }
 }
 `;
@@ -62,11 +63,13 @@ export default function RecentValues() {
     return (
       <TableRow key={change.id}>
         <TableCell>{change.newVal}</TableCell>
+        <TableCell>{change.user ? `${change.user.substring(0,10)}...` : 'Global'}</TableCell>
         <TableCell>{change.block}</TableCell>
         <TableCell>{getTransactionLink(chainId, change.id, shortened) || shortened}</TableCell>
       </TableRow>
     )
   }
+  console.log('data', data, 'error', error)
   return (
     <Paper className={classes.container}>
       <Typography variant="h6" className={classes.title}>Recent Values {loading &&
@@ -76,6 +79,7 @@ export default function RecentValues() {
           <TableHead>
             <TableRow>
               <TableCell>Value</TableCell>
+              <TableCell>User</TableCell>
               <TableCell>Block</TableCell>
               <TableCell>Transaction</TableCell>
             </TableRow>

@@ -4,22 +4,25 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: SimpleStorageV1
+    name: SimpleStorageV2
     network: ropsten
     source:
       address: "0x32D5AFB271C22ed6Db72D5D336F48E96eBc0c66C"
-      abi: simpleStorageV1
+      abi: simpleStorageV2
       startBlock: 9851144
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       abis:
-        - name: simpleStorageV1
-          file: ../contracts/src/abis/SimpleStorageV1.json
+        - name: simpleStorageV2
+          file: ../contracts/src/abis/SimpleStorageV2.json
       entities:
         - Change
+        - ChangeV2
       eventHandlers:
         - event: Change(string,uint256)
           handler: handleChange
+        - event: ChangeV2(string,address,uint256)
+          handler: handleChangeV2
       file: ./src/mappings/changes.ts
       language: wasm/assemblyscript
