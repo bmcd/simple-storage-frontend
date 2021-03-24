@@ -37,12 +37,17 @@ function getSigner() {
 
 async function getContract() {
   const { chainId } = await getNetwork()
-  return new Contract(addresses[chainId].simpleStorage, abis.simpleStorageV3, provider).deployed()
+  return new Contract(addresses[chainId].simpleStorage, abis.simpleStorageV4, provider).deployed()
 }
 
 async function getTokenContract() {
   const { chainId } = await getNetwork()
   return new Contract(addresses[chainId].simpleStorageCoin, abis.simpleStorageCoin, provider).deployed()
+}
+
+async function getBadgeContract() {
+  const { chainId } = await getNetwork()
+  return new Contract(addresses[chainId].simpleStorageBadge, abis.simpleStorageBadge, provider).deployed()
 }
 
 export async function getContractValue() {
@@ -88,5 +93,22 @@ export async function callApprove(inputValue) {
   const simpleStorage= await getContract()
   const simpleStorageCoin = await getTokenContract()
   return simpleStorageCoin.connect(getSigner()).approve(simpleStorage.address, inputValue)
+}
+
+export async function getBadges(address) {
+  const badge = await getBadgeContract()
+  const count = (await badge.balanceOf(address)).toNumber()
+  const badges = []
+  for (let i = 0; i < count; i++) {
+    const badgeId = await badge.tokenOfOwnerByIndex(address, i)
+    const badgeUri = await badge.tokenURI(badgeId)
+    badges.push(badgeUri)
+  }
+  return badges
+}
+
+export async function callMintBadge(uri) {
+  const simpleStorage= await getContract()
+  return simpleStorage.connect(getSigner()).mintBadge(uri)
 }
 
