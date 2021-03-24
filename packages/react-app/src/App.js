@@ -11,6 +11,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import StatusCard from './features/network/StatusCard'
 import PersonalStorage from './features/contract/PersonalStorage'
 import Grid from '@material-ui/core/Grid'
+import SimpleStorageCoin from './features/token/SimpleStorageCoin'
+import RecentValues from './features/contract/RecentValues'
 
 const useStyles = makeStyles({
   container: {
@@ -50,10 +52,16 @@ function App() {
         alignItems="flex-start"
       >
         <Grid className={classes.gridItem} item xs={12} sm={10} md={6}>
+          <SimpleStorage/>
+        </Grid>
+        <Grid className={classes.gridItem} item xs={12} sm={10} md={6}>
+          <SimpleStorageCoin/>
+        </Grid>
+        <Grid className={classes.gridItem} item xs={12} sm={10} md={6}>
           <PersonalStorage/>
         </Grid>
         <Grid className={classes.gridItem} item xs={12} sm={10} md={6}>
-          <SimpleStorage/>
+          <RecentValues/>
         </Grid>
       </Grid>
       }

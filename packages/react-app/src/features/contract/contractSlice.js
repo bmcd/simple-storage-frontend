@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
 import {
+  callSetAddressValue,
+  callSetContractValue,
   getAddressValue,
   getContractValue,
-  callSetAddressValue,
-  callSetContractValue
+  getPrice,
 } from '../../api/provider'
 
 export const contractSlice = createSlice({
@@ -16,6 +17,7 @@ export const contractSlice = createSlice({
     personalError: undefined,
     address: undefined,
     addressValue: undefined,
+    price: undefined,
   },
   reducers: {
     setConnected: (state, action) => {
@@ -33,6 +35,9 @@ export const contractSlice = createSlice({
     setPendingTx: (state, action) => {
       state.pendingTx = action.payload
     },
+    setPrice: (state, action) => {
+      state.price = action.payload
+    },
     setError: (state, action) => {
       state.error = action.payload
     },
@@ -46,6 +51,7 @@ export const refreshContract = () => async dispatch => {
   try {
     const storageValue = await getContractValue()
     dispatch(setValue(storageValue.toNumber()))
+    dispatch(setPrice(await getPrice()))
     dispatch(setConnected(true))
   } catch (e) {
     console.log('Could not connect to contract. Reason:', e)
@@ -83,7 +89,11 @@ export const setNewValue = (inputValue) => async dispatch => {
     })
     .catch(e => {
       console.error('error sending transaction', e)
-      dispatch(setError(e.message))
+      let message = e.message
+      if(e.data && e.data.message) {
+        message = e.data.message
+      }
+      dispatch(setError(message))
       dispatch(setPendingTx(undefined))
     })
 }
@@ -106,8 +116,16 @@ export const setNewAddressValue = (inputValue) => async dispatch => {
     })
 }
 
-
-export const { setConnected, setValue, setAddress, setAddressValue, setPendingTx, setError, setPersonalError } = contractSlice.actions
+export const {
+  setConnected,
+  setValue,
+  setAddress,
+  setAddressValue,
+  setPendingTx,
+  setPrice,
+  setError,
+  setPersonalError,
+} = contractSlice.actions
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of

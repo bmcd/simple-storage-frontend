@@ -45,7 +45,7 @@ export default function SimpleStorage () {
   const classes = useStyles()
   const dispatch = useDispatch()
   const network = useSelector(selectNetwork)
-  const { connected, personalError, pendingTx, addressValue, address } = useSelector(selectContract)
+  const { connected, personalError, pendingTx, addressValue, address, price } = useSelector(selectContract)
 
   const [addressToFind, setAddressToFind] = useState(network.selectedAddress)
   const [inputValue, setInputValue] = useState('')
@@ -108,7 +108,7 @@ export default function SimpleStorage () {
         <div className={classes.row}>
           <TextField
             className={classes.stretch}
-            label="Set New Value"
+            label={`Set New Value (Price: ${price} SSC)`}
             type="number"
             value={inputValue}
             error={personalError}

@@ -37,7 +37,12 @@ function getSigner() {
 
 async function getContract() {
   const { chainId } = await getNetwork()
-  return new Contract(addresses[chainId], abis.simpleStorageV2, provider).deployed()
+  return new Contract(addresses[chainId].simpleStorage, abis.simpleStorageV3, provider).deployed()
+}
+
+async function getTokenContract() {
+  const { chainId } = await getNetwork()
+  return new Contract(addresses[chainId].simpleStorageCoin, abis.simpleStorageCoin, provider).deployed()
 }
 
 export async function getContractValue() {
@@ -55,7 +60,33 @@ export async function getAddressValue(address) {
   return simpleStorage.getForUser(address)
 }
 
+export async function getPrice() {
+  const simpleStorage = await getContract()
+  const price = await simpleStorage.getPrice()
+  return price.toNumber()
+}
+
 export async function callSetAddressValue(inputValue) {
   const simpleStorage = await getContract()
   return simpleStorage.connect(getSigner()).setForSender(inputValue)
 }
+
+export async function getTokenBalance(address) {
+  const simpleStorageCoin = await getTokenContract()
+  const balance = await simpleStorageCoin.balanceOf(address)
+  return balance.toString()
+}
+
+export async function getAuthorizedBalance(address) {
+  const simpleStorage= await getContract()
+  const simpleStorageCoin = await getTokenContract()
+  const allowance = await simpleStorageCoin.allowance(address, simpleStorage.address)
+  return allowance.toString()
+}
+
+export async function callApprove(inputValue) {
+  const simpleStorage= await getContract()
+  const simpleStorageCoin = await getTokenContract()
+  return simpleStorageCoin.connect(getSigner()).approve(simpleStorage.address, inputValue)
+}
+

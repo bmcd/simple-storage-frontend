@@ -5,12 +5,12 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectNetwork } from '../network/networkSlice'
-import { refreshContract, selectContract, setError, setNewValue, } from './contractSlice'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import IconButton from '@material-ui/core/IconButton'
 import { Refresh } from '@material-ui/icons'
 import Container from '@material-ui/core/Container'
+import { authorizeTokens, refreshToken, selectToken } from './tokenSlice'
 
 const useStyles = makeStyles({
   container: {
@@ -34,24 +34,26 @@ const useStyles = makeStyles({
   }
 })
 
-export default function SimpleStorage () {
+export default function SimpleStorageCoin () {
 
   const classes = useStyles()
   const dispatch = useDispatch()
   const network = useSelector(selectNetwork)
-  const { connected, error, pendingTx, value, price } = useSelector(selectContract)
+  const { tokenBalance, authorizedBalance } = useSelector(selectToken)
 
   const [inputValue, setInputValue] = useState('')
 
   useEffect(() => {
-    dispatch(refreshContract())
+    if(network.selectedAddress) {
+      dispatch(refreshToken())
+    }
   }, [network])
 
-  if(!connected) {
+  if(!network.chainId) {
     return <div>
       <Paper className={classes.container}>
         <Typography variant="h6" className={classes.title}>
-          Could not find contract. Please make sure you are connected to the right network.
+          Could not find token contract. Please make sure you are connected to the right network.
         </Typography>
       </Paper>
     </div>
@@ -59,41 +61,40 @@ export default function SimpleStorage () {
 
   return <div>
     <Paper className={classes.container}>
-      <IconButton style={{ float: 'right'}} onClick={() => dispatch(refreshContract())}>
+      <IconButton style={{ float: 'right'}} onClick={() => dispatch(refreshToken())}>
         <Refresh />
       </IconButton>
       <Typography variant="h6" className={classes.title}>
-        Global Storage
+        Simple Storage Coin
       </Typography>
       <Container className={classes.body}>
         <div className={classes.row}>
-          <Typography className={classes.stretch}>Current Value:</Typography>
-          <Typography variant={'h6'} style={{paddingRight: 14}}>{value}</Typography>
+          <Typography className={classes.stretch}>Current Balance:</Typography>
+          <Typography variant={'h6'} style={{paddingRight: 14}}>{tokenBalance}</Typography>
+        </div>
+        <div className={classes.row}>
+          <Typography className={classes.stretch}>Authorized Balance:</Typography>
+          <Typography variant={'h6'} style={{paddingRight: 14}}>{authorizedBalance}</Typography>
         </div>
         <div className={classes.row}>
           <TextField
             className={classes.stretch}
-            label={`Set New Value (Price: ${price} SSC)`}
+            label="Authorize Tokens"
             type="number"
             value={inputValue}
-            error={error}
-            helperText={error}
             onChange={(event) => setInputValue(event.target.value)}/>
           <Button
             className={classes.button}
             variant="contained"
             disableElevation
-            disabled={!!pendingTx}
             onClick={() => {
               try {
-                dispatch(setNewValue(BigNumber.from(inputValue)))
-                dispatch(setError(undefined))
+                dispatch(authorizeTokens(BigNumber.from(inputValue)))
               } catch (e) {
                 console.error(e)
-                dispatch(setError('Input must be an integer'))
               }
             }}>
-            {pendingTx ? 'Waiting...' : 'Set' }
+            Authorize
           </Button>
         </div>
       </Container>

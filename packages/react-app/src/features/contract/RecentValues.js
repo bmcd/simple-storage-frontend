@@ -54,7 +54,7 @@ const GET_CHANGES = gql`
 export default function RecentValues() {
   const classes = useStyles()
   const { chainId } = useSelector(selectNetwork)
-  const { loading, error, data } = useQuery(GET_CHANGES, {
+  const { loading, data } = useQuery(GET_CHANGES, {
     variables: { language: 'english' },
   })
   if (loading) return <p>Loading ...</p>
@@ -69,7 +69,6 @@ export default function RecentValues() {
       </TableRow>
     )
   }
-  console.log('data', data, 'error', error)
   return (
     <Paper className={classes.container}>
       <Typography variant="h6" className={classes.title}>Recent Values {loading &&
