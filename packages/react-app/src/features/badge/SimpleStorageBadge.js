@@ -4,12 +4,16 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectNetwork } from '../network/networkSlice'
-import IconButton from '@material-ui/core/IconButton'
-import { Refresh } from '@material-ui/icons'
+import { Add, Refresh } from '@material-ui/icons'
 import Container from '@material-ui/core/Container'
 import { mintBadge, refreshBadges, selectBadge } from './badgeSlice'
 import { Button } from '@material-ui/core'
 import { selectContract } from '../contract/contractSlice'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
 
 const useStyles = makeStyles({
   container: {
@@ -33,6 +37,7 @@ const useStyles = makeStyles({
   },
   badge: {
     marginLeft: 8,
+    cursor: 'pointer',
   },
 })
 
@@ -44,6 +49,7 @@ export default function SimpleStorageBadge () {
   const { price } = useSelector(selectContract)
   const { connected, badges } = useSelector(selectBadge)
 
+  const [open, setOpen] = useState(false)
   const [imageUri, setImageUri] = useState(`https://static-cdn.jtvnw.net/emoticons/v1/${Math.floor(Math.random()* 10000)}/1.0`)
 
   useEffect(() => {
@@ -64,38 +70,42 @@ export default function SimpleStorageBadge () {
 
   return <div>
     <Paper className={classes.container}>
-      <IconButton style={{ float: 'right'}} onClick={() => {
-        setImageUri(`https://static-cdn.jtvnw.net/emoticons/v1/${Math.floor(Math.random()* 10000)}/1.0`)
-        dispatch(refreshBadges())
-      }}>
-        <Refresh />
-      </IconButton>
       <Typography variant="h6" className={classes.title}>
         My Badges
         {badges.map((uri) => <img src={uri} className={classes.badge} key={uri} />)}
+        <Add className={classes.badge} onClick={() => setOpen(true)}/>
       </Typography>
-      <Container className={classes.body}>
-        <div className={classes.row}>
-        </div>
-        <div className={classes.row}>
-          <Typography className={classes.stretch}>Add Badge ({price} SSC):</Typography>
-        <img src={imageUri} className={classes.badge} />
+    </Paper>
+    <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="form-dialog-title">
+      <DialogTitle id="form-dialog-title">Mint Badge</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Mint the badge below for {price} SSC.
+        </DialogContentText>
+        <Refresh className={classes.badge} style={{ float: 'right'}} onClick={() => {
+          setImageUri(`https://static-cdn.jtvnw.net/emoticons/v1/${Math.floor(Math.random()* 10000)}/1.0`)
+          dispatch(refreshBadges())
+        }}/>
+        <img style={{ float: 'right'}} src={imageUri} className={classes.badge} />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setOpen(false)} color="primary">
+          Close
+        </Button>
         <Button
-          className={classes.button}
-          variant="contained"
-          disableElevation
+          color="primary"
           onClick={() => {
             try {
               dispatch(mintBadge(imageUri))
+              setOpen(false)
             } catch (e) {
               console.error(e)
             }
           }}>
           Mint
         </Button>
-        </div>
-      </Container>
-    </Paper>
+      </DialogActions>
+    </Dialog>
   </div>
 }
 
