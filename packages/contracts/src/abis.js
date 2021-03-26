@@ -4,6 +4,7 @@ import SimpleStorageV3 from "./abis/SimpleStorageV3.json";
 import SimpleStorageV4 from "./abis/SimpleStorageV4.json";
 import SimpleStorageCoin from "./abis/SimpleStorageCoin.json";
 import SimpleStorageBadge from "./abis/SimpleStorageBadge.json";
+import Marketplace from "./abis/Marketplace.json";
 
 const abis = {
   simpleStorageV1: SimpleStorageV1,
@@ -12,6 +13,7 @@ const abis = {
   simpleStorageV4: SimpleStorageV4,
   simpleStorageCoin: SimpleStorageCoin,
   simpleStorageBadge: SimpleStorageBadge,
+  marketplace: Marketplace,
 };
 
 export default abis;

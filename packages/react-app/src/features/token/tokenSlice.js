@@ -7,7 +7,8 @@ export const tokenSlice = createSlice({
   initialState: {
     connected: false,
     tokenBalance: undefined,
-    authorizedBalance: undefined,
+    storageBalance: undefined,
+    marketplaceBalance: undefined,
   },
   reducers: {
     setConnected: (state, action) => {
@@ -16,8 +17,11 @@ export const tokenSlice = createSlice({
     setTokenBalance: (state, action) => {
       state.tokenBalance = action.payload
     },
-    setAuthorizedBalance: (state, action) => {
-      state.authorizedBalance = action.payload
+    setStorageBalance: (state, action) => {
+      state.storageBalance = action.payload
+    },
+    setMarketplaceBalance: (state, action) => {
+      state.marketplaceBalance = action.payload
     },
   },
 })
@@ -26,19 +30,28 @@ export const refreshToken = () => async (dispatch, getState) => {
   try {
     const address = getState().network.info.selectedAddress
     const tokenBalance = await getTokenBalance(address)
-    const authorizedBalance = await getAuthorizedBalance(address)
+    const storageBalance = await getAuthorizedBalance(address, 'storage')
+    const marketplaceBalance = await getAuthorizedBalance(address, 'marketplace')
     dispatch(setTokenBalance(tokenBalance))
-    dispatch(setAuthorizedBalance(authorizedBalance))
+    dispatch(setStorageBalance(storageBalance))
+    dispatch(setMarketplaceBalance(marketplaceBalance))
     dispatch(setConnected(true))
   } catch (e) {
     console.log('Could not connect to token contract. Reason:', e)
     dispatch(setConnected(false))
   }
 }
+export const authorizeMarketplaceTokens = (amount) => {
+  return authorizeTokens(amount, 'marketplace')
+}
 
-export const authorizeTokens = (amount) => async dispatch => {
+export const authorizeStorageTokens = (amount) => {
+  return authorizeTokens(amount, 'storage')
+}
+
+export const authorizeTokens = (amount, contract) => async dispatch => {
   dispatch(setPendingTx('SENDING'))
-  callApprove(amount)
+  callApprove(amount, contract)
     .then((res) => {
       dispatch(setPendingTx(res.hash))
       return res.wait()
@@ -57,7 +70,8 @@ export const authorizeTokens = (amount) => async dispatch => {
 export const {
   setTokenBalance,
   setConnected,
-  setAuthorizedBalance,
+  setStorageBalance,
+  setMarketplaceBalance,
 } = tokenSlice.actions
 
 // The function below is called a selector and allows us to select a value from

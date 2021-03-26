@@ -10,7 +10,7 @@ import TextField from '@material-ui/core/TextField'
 import IconButton from '@material-ui/core/IconButton'
 import { Refresh } from '@material-ui/icons'
 import Container from '@material-ui/core/Container'
-import { authorizeTokens, refreshToken, selectToken } from './tokenSlice'
+import { authorizeStorageTokens, refreshToken, selectToken } from './tokenSlice'
 
 const useStyles = makeStyles({
   container: {
@@ -39,7 +39,7 @@ export default function SimpleStorageCoin () {
   const classes = useStyles()
   const dispatch = useDispatch()
   const network = useSelector(selectNetwork)
-  const { tokenBalance, authorizedBalance } = useSelector(selectToken)
+  const { tokenBalance, storageBalance } = useSelector(selectToken)
 
   const [inputValue, setInputValue] = useState('')
 
@@ -74,7 +74,7 @@ export default function SimpleStorageCoin () {
         </div>
         <div className={classes.row}>
           <Typography className={classes.stretch}>Authorized Balance:</Typography>
-          <Typography variant={'h6'} style={{paddingRight: 14}}>{authorizedBalance}</Typography>
+          <Typography variant={'h6'} style={{paddingRight: 14}}>{storageBalance}</Typography>
         </div>
         <div className={classes.row}>
           <TextField
@@ -89,7 +89,7 @@ export default function SimpleStorageCoin () {
             disableElevation
             onClick={() => {
               try {
-                dispatch(authorizeTokens(BigNumber.from(inputValue)))
+                dispatch(authorizeStorageTokens(BigNumber.from(inputValue)))
               } catch (e) {
                 console.error(e)
               }

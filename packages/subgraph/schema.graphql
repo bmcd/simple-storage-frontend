@@ -5,3 +5,13 @@ type Change @entity {
   newVal: BigInt!
   user: Bytes
 }
+
+type Trade @entity {
+  id: ID!
+  ad: BigInt!
+  poster: Bytes!
+  tokenId: BigInt!
+  price: BigInt!
+  status: String!
+  block: BigInt!
+}

@@ -14,6 +14,7 @@ import Grid from '@material-ui/core/Grid'
 import SimpleStorageCoin from './features/token/SimpleStorageCoin'
 import RecentValues from './features/contract/RecentValues'
 import SimpleStorageBadge from './features/badge/SimpleStorageBadge'
+import BadgesForSale from './features/badge/BadgesForSale'
 
 const useStyles = makeStyles({
   container: {
@@ -66,6 +67,9 @@ function App() {
         </Grid>
         <Grid className={classes.gridItem} item xs={12} sm={10} md={6}>
           <RecentValues/>
+        </Grid>
+        <Grid className={classes.gridItem} item xs={12} sm={10} md={6}>
+          <BadgesForSale/>
         </Grid>
       </Grid>
       }

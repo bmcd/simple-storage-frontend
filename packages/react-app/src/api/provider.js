@@ -50,6 +50,11 @@ async function getBadgeContract() {
   return new Contract(addresses[chainId].simpleStorageBadge, abis.simpleStorageBadge, provider).deployed()
 }
 
+async function getMarketplaceContract() {
+  const { chainId } = await getNetwork()
+  return new Contract(addresses[chainId].marketplace, abis.marketplace, provider).deployed()
+}
+
 export async function getContractValue() {
   const simpleStorage = await getContract()
   return simpleStorage.get()
@@ -82,17 +87,17 @@ export async function getTokenBalance(address) {
   return balance.toString()
 }
 
-export async function getAuthorizedBalance(address) {
-  const simpleStorage= await getContract()
+export async function getAuthorizedBalance(address, contract) {
+  const targetContract = contract === 'storage' ? await getContract() : await getMarketplaceContract()
   const simpleStorageCoin = await getTokenContract()
-  const allowance = await simpleStorageCoin.allowance(address, simpleStorage.address)
+  const allowance = await simpleStorageCoin.allowance(address, targetContract.address)
   return allowance.toString()
 }
 
-export async function callApprove(inputValue) {
-  const simpleStorage= await getContract()
+export async function callApprove(inputValue, contract) {
+  const targetContract = contract === 'storage' ? await getContract() : await getMarketplaceContract()
   const simpleStorageCoin = await getTokenContract()
-  return simpleStorageCoin.connect(getSigner()).approve(simpleStorage.address, inputValue)
+  return simpleStorageCoin.connect(getSigner()).approve(targetContract.address, inputValue)
 }
 
 export async function getBadges(address) {
@@ -102,13 +107,51 @@ export async function getBadges(address) {
   for (let i = 0; i < count; i++) {
     const badgeId = await badge.tokenOfOwnerByIndex(address, i)
     const badgeUri = await badge.tokenURI(badgeId)
-    badges.push(badgeUri)
+    badges.push({
+      id: badgeId.toNumber(),
+      tokenUri: badgeUri
+    })
   }
   return badges
+}
+
+export async function getBadgeUri(badgeId) {
+  const badge = await getBadgeContract()
+  return await badge.tokenURI(badgeId)
+}
+
+export async function getBadgeApproved(tokenId) {
+  const badge = await getBadgeContract()
+  const marketplace = await getMarketplaceContract()
+  const approvedAccount = await badge.getApproved(tokenId)
+  console.log('approved account', approvedAccount)
+  return approvedAccount === marketplace.address
+
 }
 
 export async function callMintBadge(uri) {
   const simpleStorage= await getContract()
   return simpleStorage.connect(getSigner()).mintBadge(uri)
+}
+
+export async function callApproveBadge(tokenId) {
+  const badge = await getBadgeContract()
+  const marketplace = await getMarketplaceContract()
+  return badge.connect(getSigner()).approve(marketplace.address, tokenId)
+}
+
+export async function callOpenTrade(tokenId, price) {
+  const marketplace = await getMarketplaceContract()
+  return marketplace.connect(getSigner()).openTrade(tokenId, price)
+}
+
+export async function callCancelTrade(tradeId) {
+  const marketplace = await getMarketplaceContract()
+  return marketplace.connect(getSigner()).cancelTrade(tradeId)
+}
+
+export async function callExecuteTrade(tradeId) {
+  const marketplace = await getMarketplaceContract()
+  return marketplace.connect(getSigner()).executeTrade(tradeId)
 }
 
