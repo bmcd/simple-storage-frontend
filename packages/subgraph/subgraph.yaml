@@ -7,7 +7,7 @@ dataSources:
     name: SimpleStorageV2
     network: ropsten
     source:
-      address: "0x32D5AFB271C22ed6Db72D5D336F48E96eBc0c66C"
+      address: "0xaC691D54cD5C60605F810DD104f238e587afBDd7"
       abi: simpleStorageV2
       startBlock: 9851144
     mapping:
@@ -30,7 +30,7 @@ dataSources:
     name: Marketplace
     network: ropsten
     source:
-      address: "0x8874Ce166e3f8fd739450B1706b602989164989a"
+      address: "0x040b68C85c854B5adD2aB8Aad107574AD6823906"
       abi: marketplace
       startBlock: 9908600
     mapping:

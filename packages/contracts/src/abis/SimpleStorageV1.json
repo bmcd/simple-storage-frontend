@@ -32,16 +32,16 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getName",
-    "outputs": [
+    "inputs": [
       {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
+        "internalType": "uint256",
+        "name": "startingData",
+        "type": "uint256"
       }
     ],
-    "stateMutability": "pure",
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -57,4 +57,5 @@
     "stateMutability": "nonpayable",
     "type": "function"
   }
+
 ]

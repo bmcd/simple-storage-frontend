@@ -10,10 +10,10 @@ const addresses = {
   },
   // ropsten
   3: {
-    simpleStorage: "0x32D5AFB271C22ed6Db72D5D336F48E96eBc0c66C",
-    simpleStorageCoin: "0x866587154EE80b291E7f418F5944d4C5BCC967aa",
-    simpleStorageBadge: "0xD8b5871d1176D75A2a164e33B397222b996a6c35",
-    marketplace: "0x8874Ce166e3f8fd739450B1706b602989164989a",
+    simpleStorage: "0xaC691D54cD5C60605F810DD104f238e587afBDd7",
+    simpleStorageCoin: "0x05C3a160315c568a4BEEA9C7243D3fBee220D761",
+    simpleStorageBadge: "0xce5B0f04e3C2E0990cD211ea1d63e0CD9BCF8D70",
+    marketplace: "0x040b68C85c854B5adD2aB8Aad107574AD6823906",
   },
 };
 
